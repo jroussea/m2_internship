@@ -43,24 +43,22 @@ df_cc = pd.DataFrame(columns=lst_vs_attrib)
 
 # décompostion en sous graphs avec au moins n sommets
 g_sub = g.decompose(minelements=3)
-#g_sub = g.decompose()
-#print(g.es.attributes())
 lst_attribut = ['alignment_len', 'pident', 'bitscore']
 
 count=0
 for i in g_sub:
-#    """
-#    récupération du noeud le plus centrale
-#    """
-#    lst_of_lst_centricity = []
-#    for attrib in lst_attribut:
-#        lst_centricity = i.eigenvector_centrality(weights = attrib, scale = True)
-#        lst_of_lst_centricity.append(lst_centricity)
-#    arr = np.array(lst_of_lst_centricity)
-#    max_lst = arr.max(axis=1).reshape(-1,1)
-#    res_lst_max = list(np.where(arr == max_lst,1,0))
-#    lst_sum = np.sum(res_lst_max, axis=0)
-#    central_node = lst_sum.argmax(axis=0)
+    """
+    récupération du noeud le plus centrale
+    """
+    lst_of_lst_centricity = []
+    for attrib in lst_attribut:
+        lst_centricity = i.eigenvector_centrality(weights = attrib, scale = True)
+        lst_of_lst_centricity.append(lst_centricity)
+    arr = np.array(lst_of_lst_centricity)
+    max_lst = arr.max(axis=1).reshape(-1,1)
+    res_lst_max = list(np.where(arr == max_lst,1,0))
+    lst_sum = np.sum(res_lst_max, axis=0)
+    central_node = lst_sum.argmax(axis=0)
     """
     création d'un dataframe contenant les informations de chaque noeuds de chaque composante
     """
@@ -70,7 +68,7 @@ for i in g_sub:
     """
     création d'un dataframe contenant les séquences représentative des cc
     """
-#    df_central_seq = pd.concat([df_central_seq, df_sub_cc.iloc[[central_node]]])
+    df_central_seq = pd.concat([df_central_seq, df_sub_cc.iloc[[central_node]]])
     count += 1
 
 """
@@ -81,11 +79,11 @@ with open(f"ssn_statistique_{condition_name}.txt", "w") as f:
     f.write(f"Nombre de séquences intiale : {len(nodes)}\n")
     f.write(f"Nombre de séquences conservés après filtration : {len(df_cc)}\n")
     f.write(f"Nombre de composante connexe : {len(g_sub)}\n")
-#    f.write(f"Nombre de séquences de référence : {len(df_central_seq)}")
+    f.write(f"Nombre de séquences de référence : {len(df_central_seq)}")
 
 """
 sauvegarde des différentes informations
 """
 ig.Graph.write_pickle(g, f"ssn_graph_{condition_name}.pickle")
 df_cc.to_csv(f"ssn_composantes_connexes_graph_{condition_name}.csv", index=False, sep=";")
-#df_central_seq.to_csv(f"ssn_representative_sequence_{condition_name}.csv", index=False, sep=";")
+df_central_seq.to_csv(f"ssn_representative_sequence_{condition_name}.csv", index=False, sep=";")
